@@ -8,7 +8,7 @@ const (
 	MAX_THREAD_COUNT = 102400
 )
 
-type ThreadPoll struct {
+type ThreadPool struct {
 	taskList     chan ITask
 	runningCount chan bool
 }
@@ -17,7 +17,7 @@ type ITask interface {
 	onExecute()
 }
 
-func (self *ThreadPoll) initThreads() {
+func (self *ThreadPool) initThreads() {
 	for i := 0; i < MAX_THREAD_COUNT; i++ {
 		go func() {
 			task := <-self.taskList
@@ -29,17 +29,17 @@ func (self *ThreadPoll) initThreads() {
 	}
 }
 
-func (self *ThreadPoll) Start(task ITask) {
+func (self *ThreadPool) Start(task ITask) {
 	self.taskList <- task
 	self.runningCount <- true
 }
 
-func (self *ThreadPoll) Stop() {
+func (self *ThreadPool) Stop() {
 	close(self.taskList)
 	close(self.runningCount)
 }
 
-func (self *ThreadPoll) WaitAllFinish() {
+func (self *ThreadPool) WaitAllFinish() {
 	for {
 		select {
 		case <-time.After(time.Second):
@@ -51,8 +51,8 @@ func (self *ThreadPoll) WaitAllFinish() {
 	}
 }
 
-func New() *ThreadPoll {
-	object := &ThreadPoll{
+func New() *ThreadPool {
+	object := &ThreadPool{
 		taskList:     make(chan ITask, MAX_THREAD_COUNT),
 		runningCount: make(chan bool, MAX_THREAD_COUNT),
 	}
