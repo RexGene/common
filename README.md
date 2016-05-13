@@ -4,7 +4,9 @@
 
 ### Install
 
-> go get github.com/RexGene/common/memorypool
+```
+go get github.com/RexGene/common/memorypool
+```
 
 ### Usage
 
