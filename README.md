@@ -4,7 +4,7 @@
 
 ###Usage
 
-```
+```golang
 
 import "github.com/RexGene/common/memorypool"
 
