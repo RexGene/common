@@ -22,3 +22,34 @@ mempool.Clean()
 
 
 ```
+
+## ThreadPool
+
+### Install
+```
+go get github.com/RexGene/common/threadpool
+```
+### Usage
+
+```golang
+
+import "github.com/RexGene/common/threadpool"
+
+type TestTask struct {
+}
+
+func (self TestTask) onExecute() {
+	print("test")
+}
+
+pool := threadpool.New()
+task := new(TestTask)
+for i := 0; i < 1000; i++ {
+    pool.Start(task)
+}
+
+pool.WaitAllFinish()
+
+
+```
+
