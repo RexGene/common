@@ -2,7 +2,11 @@
 
 ## MemoryPool 
 
-###Usage
+### Install
+
+> go get github.com/RexGene/common/memorypool
+
+### Usage
 
 ```golang
 
