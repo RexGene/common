@@ -2,6 +2,8 @@ package objectpool
 
 const OBJECT_LIST_SIZE = 256
 
+var instance *ObjectPool
+
 type IPoolObject interface {
 	GetObjectType() int
 	SetObjectType(int)
@@ -58,4 +60,12 @@ func New() *ObjectPool {
 		pool:    make(map[int][]IPoolObject),
 		funcMap: make(map[int]ObjectFunc),
 	}
+}
+
+func GetInstance() *ObjectPool {
+	if instance == nil {
+		instance = New()
+	}
+
+	return instance
 }

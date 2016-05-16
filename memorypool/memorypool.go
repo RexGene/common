@@ -8,6 +8,8 @@ const (
 	MAX_MEM_LIST_SIZE = 10240
 )
 
+var instance *MemoryPool
+
 type MemoryPool struct {
 	data map[uint]chan []byte
 	lock chan bool
@@ -60,4 +62,12 @@ func (self *MemoryPool) Clean() {
 	}
 
 	self.data = make(map[uint]chan []byte)
+}
+
+func GetInstance() *MemoryPool {
+	if instance == nil {
+		instance = New()
+	}
+
+	return instance
 }

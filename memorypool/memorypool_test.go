@@ -22,7 +22,7 @@ func TestAllocAndFree(t *testing.T) {
 }
 
 func TestDoubleAllocAndFree(t *testing.T) {
-	var mempool = New()
+	var mempool = GetInstance()
 	isFirst := true
 
 	for i := 1; i < 10000; i++ {

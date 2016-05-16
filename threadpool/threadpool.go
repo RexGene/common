@@ -8,6 +8,8 @@ const (
 	MAX_THREAD_COUNT = 102400
 )
 
+var instance *ThreadPool
+
 type ThreadPool struct {
 	taskList     chan func()
 	runningCount chan bool
@@ -56,4 +58,12 @@ func New() *ThreadPool {
 	object.initThreads()
 
 	return object
+}
+
+func GetInstance() *ThreadPool {
+	if instance == nil {
+		instance = New()
+	}
+
+	return instance
 }

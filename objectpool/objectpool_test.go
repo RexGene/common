@@ -13,7 +13,7 @@ func TextNew() IPoolObject {
 }
 
 func TestObjectPool(t *testing.T) {
-	pool := New()
+	pool := GetInstance()
 
 	pool.RegistObject(1, TextNew)
 	object, isNew := pool.MakeObject(1)

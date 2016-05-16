@@ -14,7 +14,7 @@ go get github.com/RexGene/common/memorypool
 
 import "github.com/RexGene/common/memorypool"
 
-mempool = memorypool.New() 
+mempool = memorypool.GetInstance() 
 buff := mempool.Alloc(1000)
 mempool.Free(buff)
 
@@ -42,7 +42,7 @@ func (self TestTask) onExecute() {
 	print("test")
 }
 
-pool := threadpool.New()
+pool := threadpool.GetInstance()
 task := new(TestTask)
 for i := 0; i < 1000; i++ {
     pool.Start(task.onExecute)
@@ -73,7 +73,7 @@ func TextNew() IPoolObject {
 	return &TestObject{}
 }
 
-pool := objectpool.New()
+pool := objectpool.GetInstance()
 pool.RegistObject(1, TextNew)
 
 object := pool.MakeObject(1)
