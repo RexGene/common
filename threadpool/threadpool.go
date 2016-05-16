@@ -9,12 +9,8 @@ const (
 )
 
 type ThreadPool struct {
-	taskList     chan ITask
+	taskList     chan func()
 	runningCount chan bool
-}
-
-type ITask interface {
-	onExecute()
 }
 
 func (self *ThreadPool) initThreads() {
@@ -22,14 +18,14 @@ func (self *ThreadPool) initThreads() {
 		go func() {
 			task := <-self.taskList
 			if task != nil {
-				task.onExecute()
+				task()
 			}
 			<-self.runningCount
 		}()
 	}
 }
 
-func (self *ThreadPool) Start(task ITask) {
+func (self *ThreadPool) Start(task func()) {
 	self.taskList <- task
 	self.runningCount <- true
 }
@@ -53,7 +49,7 @@ func (self *ThreadPool) WaitAllFinish() {
 
 func New() *ThreadPool {
 	object := &ThreadPool{
-		taskList:     make(chan ITask, MAX_THREAD_COUNT),
+		taskList:     make(chan func(), MAX_THREAD_COUNT),
 		runningCount: make(chan bool, MAX_THREAD_COUNT),
 	}
 

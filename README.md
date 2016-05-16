@@ -45,7 +45,7 @@ func (self TestTask) onExecute() {
 pool := threadpool.New()
 task := new(TestTask)
 for i := 0; i < 1000; i++ {
-    pool.Start(task)
+    pool.Start(task.onExecute)
 }
 
 pool.WaitAllFinish()
