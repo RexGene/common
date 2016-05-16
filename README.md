@@ -52,4 +52,31 @@ pool.WaitAllFinish()
 
 
 ```
+## ObjectPool
 
+
+### Install
+```
+go get github.com/RexGene/common/objectpool
+```
+### Usage
+
+```golang
+
+import "github.com/RexGene/common/objectpool"
+
+type TestObject struct {
+    objectpool.BaseObject
+}
+
+func TextNew() IPoolObject {
+	return &TestObject{}
+}
+
+pool := objectpool.New()
+pool.RegistObject(1, TextNew)
+
+object := pool.MakeObject(1)
+pool.RecoverObject(object)
+
+```
