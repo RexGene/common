@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	MAX_THREAD_COUNT = 102400
+	MAX_THREAD_COUNT = 10240
 )
 
 var instance *ThreadPool

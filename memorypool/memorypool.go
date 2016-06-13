@@ -1,7 +1,7 @@
 package memorypool
 
 import (
-	"unsafe"
+	"sync"
 )
 
 const (
@@ -11,6 +11,7 @@ const (
 var instance *MemoryPool
 
 type MemoryPool struct {
+	sync.Mutex
 	data map[uint]chan []byte
 	lock chan bool
 }
@@ -24,38 +25,39 @@ func New() *MemoryPool {
 }
 
 func (self *MemoryPool) Alloc(size uint) ([]byte, bool) {
-	self.lock <- true
-	defer func() { <-self.lock }()
+	self.Lock()
+	defer self.Unlock()
 
 	if len(self.data[size]) > 0 {
-		return <-self.data[size], false
+		buffer := <-self.data[size]
+		println("alloc ex:", buffer, " size:", size)
+		return buffer, false
 	}
 
-	buffer := make([]byte, size+4)
-	ptr := (*uint)(unsafe.Pointer(&buffer[0]))
-	*ptr = size
+	buffer := make([]byte, size)
 
-	return buffer[4:], true
+	println("alloc:", buffer, " size:", size)
+	return buffer[:], true
 }
 
 func (self *MemoryPool) Free(buffer []byte) {
-	self.lock <- true
-	defer func() { <-self.lock }()
+	self.Lock()
+	defer self.Unlock()
 
-	ptr := (*uint)(unsafe.Pointer(uintptr(unsafe.Pointer(&buffer[0])) - uintptr(4)))
-	size := *ptr
+	size := uint(cap(buffer))
 
 	data := self.data
 	if data[size] == nil {
 		data[size] = make(chan []byte, MAX_MEM_LIST_SIZE)
 	}
 
+	println("free:", buffer, " size:", size)
 	self.data[size] <- buffer
 }
 
 func (self *MemoryPool) Clean() {
-	self.lock <- true
-	defer func() { <-self.lock }()
+	self.Lock()
+	defer self.Unlock()
 
 	for _, ch := range self.data {
 		close(ch)
