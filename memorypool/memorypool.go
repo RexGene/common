@@ -30,13 +30,11 @@ func (self *MemoryPool) Alloc(size uint) ([]byte, bool) {
 
 	if len(self.data[size]) > 0 {
 		buffer := <-self.data[size]
-		println("alloc ex:", buffer, " size:", size)
 		return buffer, false
 	}
 
 	buffer := make([]byte, size)
 
-	println("alloc:", buffer, " size:", size)
 	return buffer[:], true
 }
 
@@ -51,7 +49,6 @@ func (self *MemoryPool) Free(buffer []byte) {
 		data[size] = make(chan []byte, MAX_MEM_LIST_SIZE)
 	}
 
-	println("free:", buffer, " size:", size)
 	self.data[size] <- buffer
 }
 

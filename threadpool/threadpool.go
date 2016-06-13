@@ -41,7 +41,6 @@ func (self *ThreadPool) WaitAllFinish() {
 	for {
 		select {
 		case <-time.After(time.Second):
-			print("wait", len(self.runningCount))
 			if len(self.runningCount) == 0 {
 				return
 			}
