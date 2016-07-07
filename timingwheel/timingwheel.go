@@ -15,7 +15,7 @@ type TimingWheel struct {
 	r *ring.Ring
 }
 
-func (self *TimingWheel) Remove(node *BaseNode) {
+func Remove(node *BaseNode) {
 	node.isRemove = true
 	node.isEnable = false
 }
@@ -53,7 +53,7 @@ func (self *TimingWheel) Tick() {
 	}
 }
 
-func (self *TimingWheel) InsertCallback(handlecall func()) {
+func (self *TimingWheel) InsertCallback(handlecall func()) *BaseNode {
 	node := &BaseNode{
 		isEnable:   true,
 		isRemove:   true,
@@ -69,6 +69,8 @@ func (self *TimingWheel) InsertCallback(handlecall func()) {
 	}
 
 	current.PushBack(node)
+
+	return node
 }
 
 func (self *TimingWheel) InsertCallbackForever(handlecall func()) *BaseNode {
