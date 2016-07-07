@@ -80,3 +80,31 @@ object := pool.MakeObject(1)
 pool.RecoverObject(object)
 
 ```
+
+### Install
+```
+go get github.com/RexGene/common/timingwheel
+```
+
+### Usage
+```golang
+import (
+    "time"
+    "github.com/RexGene/common/timingwheel"
+)
+
+tw := timingwheel.New(60)
+var callback = func() {
+    println("call in")
+}
+
+tw.InsertCallback(callback)
+
+for {
+    select {
+        case <-time.After(time.Second):
+            tw.Tick()
+    }
+}
+
+```
