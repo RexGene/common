@@ -9,6 +9,7 @@ type TimerManager struct {
 }
 
 var instance *TimerManager
+var hmsInstance *TimerManager
 
 func New() *TimerManager {
 	return &TimerManager{
@@ -22,6 +23,20 @@ func GetInstance() *TimerManager {
 	}
 
 	return instance
+}
+
+func GetHmsInstance() *TimerManager {
+	if hmsInstance == nil {
+		hmsInstance = New()
+	}
+
+	return hmsInstance
+}
+
+func (self *TimerManager) Tick() {
+	for _, tw := range self.data {
+		tw.Tick()
+	}
 }
 
 func (self *TimerManager) AddTimer(sec uint, callback func()) *timingwheel.BaseNode {
@@ -45,5 +60,9 @@ func (self *TimerManager) AddTimerForever(sec uint, callback func()) *timingwhee
 }
 
 func (self *TimerManager) RemoveTimer(base *timingwheel.BaseNode) {
+	timingwheel.Remove(base)
+}
+
+func RemoveTimer(base *timingwheel.BaseNode) {
 	timingwheel.Remove(base)
 }
