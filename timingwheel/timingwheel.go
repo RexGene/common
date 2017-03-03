@@ -39,7 +39,7 @@ func (self *TimingWheel) Tick() {
 	}
 
 	iter := element.Front()
-	for iter != nil {
+	for iter != nil && iter.Value != nil {
 		base := iter.Value.(*BaseNode)
 		if base.isEnable {
 			base.handlecall()
