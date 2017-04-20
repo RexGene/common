@@ -6,39 +6,59 @@ import (
 
 func TestRandom(t *testing.T) {
 	set := NewRandomSet()
+	_, ok := set.RandomAndSkip(3)
+	if ok {
+		t.Fail()
+	}
+
+	_, ok = set.Random()
+	if ok {
+		t.Fail()
+	}
+
+	ok = set.Remove(1)
+	if ok {
+		t.Fail()
+	}
+
 	set.Insert(1)
 	set.Insert(2)
 	set.Insert(3)
 
-	ok := set.Insert(1)
+	ok = set.Insert(1)
 	if ok {
-		t.Fatal("insert has a error")
+		t.Fail()
 	}
 
 	ok = set.Remove(1)
 	if !ok {
-		t.Fatal("Remove has a error")
+		t.Fail()
 	}
 
 	ok = set.Remove(1)
 	if ok {
-		t.Fatal("Remove has a error")
+		t.Fail()
 	}
 
 	ok = set.Has(2)
 	if !ok {
-		t.Fatal("Has function has a error")
+		t.Fail()
 	}
 
 	set.Remove(2)
 
 	if _, ok := set.RandomAndSkip(3); ok {
-		t.Fatal("random function has a error")
+		t.Fail()
 	}
 
 	set.Remove(3)
-	if v, ok := set.Random(); ok {
-		t.Fatal("random function has a error:", v)
+	if _, ok := set.Random(); ok {
+		t.Fail()
+	}
+
+	set.Reset()
+	if set.Len() != 0 {
+		t.Fail()
 	}
 
 	for i := 0; i < 100; i++ {
@@ -57,14 +77,14 @@ func TestRandom(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		v, ok := set.Random()
 		if !ok {
-			t.Fatal("random has a error")
+			t.Fail()
 		}
 		data[v.(int)] = true
 	}
 
 	for i := 0; i < 5; i++ {
 		if !data[i] {
-			t.Fatal("random function has a error")
+			t.Fail()
 		}
 	}
 
@@ -72,16 +92,16 @@ func TestRandom(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		v, ok := set.RandomAndSkip(3)
 		if !ok {
-			t.Fatal("random has a error")
+			t.Fail()
 		}
 		data[v.(int)] = true
 	}
 
 	if data[3] {
-		t.Fatal("RandomAndSkip has a error")
+		t.Fail()
 	}
 
 	if set.Len() != 5 {
-		t.Fatal("len has a error")
+		t.Fail()
 	}
 }

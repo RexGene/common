@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	DEFAULT_CAP = 64
+	DEFAULT_CAP = 128
 )
 
 type Value interface{}
@@ -18,10 +18,12 @@ type RandomSet struct {
 }
 
 func NewRandomSet() *RandomSet {
+	valueList := make([]Value, 0, DEFAULT_CAP)
 	return &RandomSet{
-		dataMap:   make(map[Value]uint),
-		dataList:  make([]Value, 0, DEFAULT_CAP),
-		freeCount: 0,
+		dataMap:    make(map[Value]uint),
+		dataList:   valueList,
+		freeCount:  0,
+		randomList: valueList,
 	}
 }
 
@@ -37,11 +39,11 @@ func (self *RandomSet) Insert(v Value) bool {
 		self.freeCount--
 
 		self.dataList[freeIndex] = v
-		self.randomList = self.dataList[freeIndex:]
+		self.randomList = self.dataList[self.freeCount:]
 	} else {
 		freeIndex = uint(len(self.dataList))
 		self.dataList = append(self.dataList, v)
-		self.randomList = self.dataList[freeIndex:]
+		self.randomList = self.dataList[self.freeCount:]
 	}
 
 	self.dataMap[v] = freeIndex
@@ -106,4 +108,11 @@ func (self *RandomSet) Random() (Value, bool) {
 
 func (self *RandomSet) Len() int {
 	return len(self.randomList)
+}
+
+func (self *RandomSet) Reset() {
+	self.dataMap = make(map[Value]uint)
+	self.dataList = make([]Value, 0, DEFAULT_CAP)
+	self.randomList = self.dataList
+	self.freeCount = 0
 }
