@@ -104,4 +104,8 @@ func TestRandom(t *testing.T) {
 	if set.Len() != 5 {
 		t.Fail()
 	}
+
+	if set.GetFreeCount() != 95 {
+		t.Fatal("free count:", set.GetFreeCount())
+	}
 }

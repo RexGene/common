@@ -51,13 +51,13 @@ func (self *RandomSet) Insert(v Value) bool {
 }
 
 func (self *RandomSet) Remove(v Value) bool {
-	index, ok := self.dataMap[v]
-	if !ok {
+	freeCount := self.freeCount
+	if freeCount >= uint(len(self.dataList)) {
 		return false
 	}
 
-	freeCount := self.freeCount
-	if freeCount >= uint(len(self.dataList)) {
+	index, ok := self.dataMap[v]
+	if !ok {
 		return false
 	}
 
@@ -88,9 +88,11 @@ func (self *RandomSet) RandomAndSkip(skip Value) (Value, bool) {
 	}
 
 	randValue := uint(rand.Int31n(int32(randomSize) - 1))
-	index := self.dataMap[skip]
-	if self.freeCount+randValue >= index {
-		randValue++
+	index, ok := self.dataMap[skip]
+	if ok {
+		if self.freeCount+randValue >= index {
+			randValue++
+		}
 	}
 
 	return self.randomList[randValue], true
@@ -115,4 +117,8 @@ func (self *RandomSet) Reset() {
 	self.dataList = make([]Value, 0, DEFAULT_CAP)
 	self.randomList = self.dataList
 	self.freeCount = 0
+}
+
+func (self *RandomSet) GetFreeCount() uint {
+	return self.freeCount
 }
