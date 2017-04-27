@@ -83,15 +83,23 @@ func (self *RandomSet) Has(v Value) bool {
 
 func (self *RandomSet) RandomAndSkip(skip Value) (Value, bool) {
 	randomSize := len(self.randomList)
-	if randomSize <= 1 {
+	if randomSize < 1 {
 		return nil, false
 	}
 
-	randValue := uint(rand.Int31n(int32(randomSize) - 1))
-	index, ok := self.dataMap[skip]
-	if ok {
-		if self.freeCount+randValue >= index {
-			randValue++
+	randValue := uint(0)
+	if randomSize > 1 {
+		randValue = uint(rand.Int31n(int32(randomSize) - 1))
+		index, ok := self.dataMap[skip]
+		if ok {
+			if self.freeCount+randValue >= index {
+				randValue++
+			}
+		}
+	} else {
+		_, ok := self.dataMap[skip]
+		if ok {
+			return nil, false
 		}
 	}
 
@@ -121,4 +129,10 @@ func (self *RandomSet) Reset() {
 
 func (self *RandomSet) GetFreeCount() uint {
 	return self.freeCount
+}
+
+func (self *RandomSet) Each(cb func(value Value)) {
+	for _, v := range self.randomList {
+		cb(v)
+	}
 }
