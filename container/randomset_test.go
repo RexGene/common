@@ -13,12 +13,12 @@ func TestRandom(t *testing.T) {
 
 	_, ok = set.Random()
 	if ok {
-		t.Fail()
+		t.Fatal("1")
 	}
 
 	ok = set.Remove(1)
 	if ok {
-		t.Fail()
+		t.Fatal("2")
 	}
 
 	set.Insert(1)
@@ -27,38 +27,38 @@ func TestRandom(t *testing.T) {
 
 	ok = set.Insert(1)
 	if ok {
-		t.Fail()
+		t.Fatal("3")
 	}
 
 	ok = set.Remove(1)
 	if !ok {
-		t.Fail()
+		t.Fatal("4")
 	}
 
 	ok = set.Remove(1)
 	if ok {
-		t.Fail()
+		t.Fatal("5")
 	}
 
 	ok = set.Has(2)
 	if !ok {
-		t.Fail()
+		t.Fatal("6")
 	}
 
 	set.Remove(2)
 
 	if _, ok := set.RandomAndSkip(3); ok {
-		t.Fail()
+		t.Fatal("7")
 	}
 
 	set.Remove(3)
 	if _, ok := set.Random(); ok {
-		t.Fail()
+		t.Fatal("8")
 	}
 
 	set.Reset()
 	if set.Len() != 0 {
-		t.Fail()
+		t.Fatal("9")
 	}
 
 	for i := 0; i < 100; i++ {
@@ -77,14 +77,14 @@ func TestRandom(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		v, ok := set.Random()
 		if !ok {
-			t.Fail()
+			t.Fatal("10")
 		}
 		data[v.(int)] = true
 	}
 
 	for i := 0; i < 5; i++ {
 		if !data[i] {
-			t.Fail()
+			t.Fatal("11")
 		}
 	}
 
@@ -92,18 +92,59 @@ func TestRandom(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		v, ok := set.RandomAndSkip(3)
 		if !ok {
-			t.Fail()
+			t.Fatal("12")
 		}
 		data[v.(int)] = true
 	}
 
 	if data[3] {
-		t.Fail()
+		t.Fatal("13")
 	}
 
 	if set.Len() != 5 {
-		t.Fail()
+		t.Fatal("14")
 	}
+
+	list, _ := set.GetList(5)
+	if len(list) != 5 {
+		t.Fatal("15")
+	}
+
+	data = make(map[int]bool)
+	for _, v := range list {
+		data[v.(int)] = true
+	}
+
+	for i := 0; i < 5; i++ {
+		if !data[i] {
+			t.Fatal("16")
+		}
+	}
+
+	// for i := 0; i < 100; i++ {
+	// 	list, _ := set.GetListAndSkip(3, 10)
+	// 	for _, v := range list {
+	// 		log.Println(v)
+	// 	}
+	// 	if len(list) != 4 {
+	// 		t.Fatal("17")
+	// 	}
+
+	// 	data = make(map[int]bool)
+	// 	for _, v := range list {
+	// 		data[v.(int)] = true
+	// 	}
+
+	// 	// for j := 0; j < 5; j++ {
+	// 	// 	if !data[j] {
+	// 	// 		t.Fatal("18")
+	// 	// 	}
+	// 	// }
+
+	// 	// if data[3] {
+	// 	// 	t.Fatal("19")
+	// 	// }
+	// }
 
 	if set.GetFreeCount() != 95 {
 		t.Fatal("free count:", set.GetFreeCount())

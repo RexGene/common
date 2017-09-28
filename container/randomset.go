@@ -27,6 +27,70 @@ func NewRandomSet() *RandomSet {
 	}
 }
 
+func (self *RandomSet) GetList(size uint) ([]Value, bool) {
+	randomSize := uint(len(self.randomList))
+	if randomSize <= 0 {
+		return nil, false
+	}
+
+	rs := make([]Value, randomSize)
+	copy(rs, self.randomList)
+
+	minSize := size
+	if randomSize < minSize {
+		minSize = randomSize
+	}
+
+	for index := uint(0); index < minSize; index++ {
+		randValue := index + uint(rand.Int31n(int32(randomSize-index)))
+		rs[index], rs[randValue] = rs[randValue], rs[index]
+	}
+
+	return rs[:minSize], true
+}
+
+// func (self *RandomSet) GetListAndSkip(skip Value, size uint) ([]Value, bool) {
+// 	randomSize := uint(len(self.randomList))
+// 	if randomSize <= 0 {
+// 		return nil, false
+// 	}
+//
+// 	rs := make([]Value, randomSize)
+// 	copy(rs, self.randomList)
+//
+// 	minSize := uint(0)
+// 	skipIndex, ok := self.dataMap[skip]
+// 	log.Println("skipIndex:", skipIndex)
+// 	if ok {
+// 		randomSize--
+// 		minSize = size
+// 		if randomSize < minSize {
+// 			minSize = randomSize
+// 		}
+//
+// 		for index := uint(0); index < minSize; index++ {
+// 			randValue := index + uint(rand.Int31n(int32(randomSize-index)))
+// 			log.Println("randValue:", self.freeCount+randValue)
+// 			if self.freeCount+randValue == skipIndex {
+// 				randValue++
+// 			}
+// 			rs[index], rs[randValue] = rs[randValue], rs[index]
+// 		}
+// 	} else {
+// 		minSize = size
+// 		if randomSize < minSize {
+// 			minSize = randomSize
+// 		}
+//
+// 		for index := uint(0); index < minSize; index++ {
+// 			randValue := index + uint(rand.Int31n(int32(randomSize-index)))
+// 			rs[index], rs[randValue] = rs[randValue], rs[index]
+// 		}
+// 	}
+//
+// 	return rs[:minSize], true
+// }
+
 func (self *RandomSet) Insert(v Value) bool {
 	_, ok := self.dataMap[v]
 	if ok {
@@ -88,19 +152,18 @@ func (self *RandomSet) RandomAndSkip(skip Value) (Value, bool) {
 	}
 
 	randValue := uint(0)
-	if randomSize > 1 {
-		randValue = uint(rand.Int31n(int32(randomSize) - 1))
-		index, ok := self.dataMap[skip]
-		if ok {
+	index, ok := self.dataMap[skip]
+	if ok {
+		if randomSize > 1 {
+			randValue = uint(rand.Int31n(int32(randomSize) - 1))
 			if self.freeCount+randValue >= index {
 				randValue++
 			}
-		}
-	} else {
-		_, ok := self.dataMap[skip]
-		if ok {
+		} else {
 			return nil, false
 		}
+	} else {
+		randValue = uint(rand.Int31n(int32(randomSize)))
 	}
 
 	return self.randomList[randValue], true
