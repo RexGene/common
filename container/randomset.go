@@ -199,3 +199,9 @@ func (self *RandomSet) Each(cb func(value Value)) {
 		cb(v)
 	}
 }
+
+func (self *RandomSet) GetAll() (rs []Value) {
+	rs = make([]Value, len(self.randomList))
+	copy(rs, self.randomList)
+	return rs
+}

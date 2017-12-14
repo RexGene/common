@@ -149,4 +149,6 @@ func TestRandom(t *testing.T) {
 	if set.GetFreeCount() != 95 {
 		t.Fatal("free count:", set.GetFreeCount())
 	}
+
+	println(set.GetAll())
 }
