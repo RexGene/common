@@ -39,11 +39,11 @@ func (self *TimerManager) Tick() {
 	}
 }
 
-func (self *TimerManager) AddTimer(sec uint, callback func()) *timingwheel.BaseNode {
-	tw := self.data[sec]
+func (self *TimerManager) AddTimer(unit uint, callback func()) *timingwheel.BaseNode {
+	tw := self.data[unit]
 	if tw == nil {
-		tw = timingwheel.New(sec)
-		self.data[sec] = tw
+		tw = timingwheel.New(unit)
+		self.data[unit] = tw
 	}
 
 	return tw.InsertCallback(callback)
